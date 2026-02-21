@@ -11,10 +11,11 @@ Supernova Weather Simulator is more than just a weather dashboard. It's a techni
 
 ## ✨ Key Features
 
-- **Full-Stack Synchronization**: Node.js/Express backend fetches real-world atmospheric data and feeds it directly into the simulation engine.
+- **Interactive Geo-Spatial Mapping**: Integrated Leaflet with dark-matter tiles, providing a global interactive backdrop that syncs with search telemetry.
+- **"Compare to Reality" Engine**: A diagnostic module that visualizes the delta between user-defined simulation parameters and live OpenWeatherMap data.
+- **Full-Stack Synchronization**: Node.js/Express backend fetches real-world atmospheric telemetry (Temp, Wind, Precipitation) and auto-centers the simulation on real coordinates.
 - **Dynamic Physics Engine**: Custom-built particle system handles Rain, Snow, and Storm effects with realistic wind-velocity vectors.
-- **Premium Glassmorphic UI**: High-fidelity design system utilizing backdrop filters, curated HSL color palettes, and modern typography (`Outfit` & `Inter`).
-- **Real-Time Telemetry**: Users can manually override environmental variables (Precipitation, Wind Speed) or sync to any global location via search.
+
 
 ## 🛠️ Tech Stack
 
