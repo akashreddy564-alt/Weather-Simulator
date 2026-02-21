@@ -3,6 +3,9 @@ import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import WeatherEngine from './components/WeatherEngine';
 import Dashboard from './components/Dashboard';
 import RealityCompare from './components/RealityCompare';
+import ChaosButton from './components/ChaosButton';
+import AchievementPanel from './components/AchievementPanel';
+
 
 // Change map view when city changes
 function ChangeView({ center }) {
@@ -17,11 +20,19 @@ function App() {
     type: 'sunny',
     intensity: 0,
     wind: 5,
-    label: 'Clear Sky'
+    label: 'Clear Sky',
+    isChaos: false
   });
   const [coords, setCoords] = useState([51.505, -0.09]); // Default: London
   const [city, setCity] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const toggleChaos = () => {
+    setWeatherState(prev => ({
+      ...prev,
+      isChaos: !prev.isChaos
+    }));
+  };
 
   const fetchCityWeather = async (e) => {
     e.preventDefault();
@@ -37,7 +48,8 @@ function App() {
         intensity: data.intensity,
         wind: data.wind,
         label: `Syncing: ${data.city}`,
-        reality: data // Store reality data for comparison
+        reality: data, // Store reality data for comparison
+        isChaos: false // Reset chaos on new sync
       });
       if (data.coords) {
         setCoords([data.coords.lat, data.coords.lon]);
@@ -50,9 +62,11 @@ function App() {
   };
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${weatherState.isChaos ? 'animate-shake' : ''}`}>
+      {weatherState.isChaos && <div className="chaos-flash" />}
+
       {/* Map Background Layer */}
-      <div className="map-container">
+      <div className="map-container" style={{ filter: weatherState.isChaos ? 'grayscale(100%) contrast(150%) brightness(50%)' : 'none' }}>
         <MapContainer center={coords} zoom={12} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
           <ChangeView center={coords} />
           <TileLayer
@@ -68,7 +82,7 @@ function App() {
       {/* UI Interaction Layer */}
       <main className="ui-overlay" style={{ padding: '40px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div className="glass animate-fade-in" style={{
+          <div className="glass-premium animate-fade-in" style={{
             width: 'fit-content',
             padding: '12px 24px',
             display: 'flex',
@@ -79,13 +93,15 @@ function App() {
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              background: '#00d2ff',
-              boxShadow: '0 0 10px #00d2ff'
+              background: weatherState.isChaos ? '#ff4b2b' : '#00d2ff',
+              boxShadow: `0 0 10px ${weatherState.isChaos ? '#ff4b2b' : '#00d2ff'}`
             }} />
-            <span style={{ fontWeight: 600, letterSpacing: '1px' }}>{loading ? 'SYNCING...' : 'ATMOS LINK ONLINE'}</span>
+            <span style={{ fontWeight: 600, letterSpacing: '1px' }}>
+              {weatherState.isChaos ? '!!! ANOMALY DETECTED !!!' : (loading ? 'SYNCING...' : 'ATMOS LINK ONLINE')}
+            </span>
           </div>
 
-          <form onSubmit={fetchCityWeather} className="glass animate-fade-in" style={{ padding: '8px 16px', display: 'flex', gap: '8px' }}>
+          <form onSubmit={fetchCityWeather} className="glass-premium animate-fade-in" style={{ padding: '8px 16px', display: 'flex', gap: '8px' }}>
             <input
               type="text"
               placeholder="Enter city to sync..."
@@ -105,7 +121,9 @@ function App() {
         </div>
 
         <RealityCompare reality={weatherState.reality} current={weatherState} />
+        <AchievementPanel weatherState={weatherState} />
         <Dashboard weatherState={weatherState} setWeatherState={setWeatherState} />
+        <ChaosButton isActive={weatherState.isChaos} onClick={toggleChaos} />
       </main>
     </div>
   );

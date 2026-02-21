@@ -9,7 +9,7 @@ const Dashboard = ({ weatherState, setWeatherState }) => {
     ];
 
     return (
-        <div className="glass dashboard animate-fade-in" style={{
+        <div className="glass-premium dashboard animate-fade-in" style={{
             position: 'absolute',
             bottom: '40px',
             left: '50%',
